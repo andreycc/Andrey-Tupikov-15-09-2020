@@ -2,9 +2,7 @@ package Main;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-
 import java.io.File;
-import java.time.Year;
 import java.util.ArrayList;
 
 
@@ -13,16 +11,14 @@ public class MainActivity {
     private static WebElement webElement;
     public static void main(String[] args) {
         setup();
-        String url=driver.getCurrentUrl();
         boolean v = mainlogo();
         if (v) checkicons();
         checkicons();
         checkpanels();
         hearAboutUs();
         jumpToTop();
-        shareedIcons(url);
-        openWhatapp(url);
-        finish();
+        shareedIcons();
+        openWhatapp();
     }
 
     private static void setup() {
@@ -36,7 +32,7 @@ public class MainActivity {
 
     private static boolean mainlogo() {
         webElement = driver.findElement(By.id("logom"));
-        markelemets(webElement);
+        markElements(webElement);
         try {
             if (webElement.isDisplayed()) {
                 threadSleep();
@@ -53,7 +49,7 @@ public class MainActivity {
         for (int i=1; i<=3; i++) {
             try {
                 webElement = driver.findElement(By.xpath("//*[@id=\"gatsby-focus-wrapper\"]/div/header/div/img["+i+"]"));
-                markelemets(webElement);
+                markElements(webElement);
                 threadSleep();
             }
             catch (NotFoundException e)
@@ -68,13 +64,13 @@ public class MainActivity {
             jse.executeScript("window.scrollBy(0,1000)");
             threadSleep();
             webElement = driver.findElement(By.xpath("//*[text()[contains(.,'מיקור חוץ לפיתוח Frontend ובודקי איכות')]]"));
-            markelemets(webElement);
+            markElements(webElement);
             threadSleep();
             webElement = driver.findElement(By.xpath("//*[text()[contains(.,'פרויקט Full Stack מקצה לקצה')]]"));
-            markelemets(webElement);
+            markElements(webElement);
             threadSleep();
             webElement = driver.findElement(By.xpath("//*[text()[contains(.,'ייעוץ ושדרוג ל–JavaScript')]]"));
-            markelemets(webElement);
+            markElements(webElement);
             threadSleep();
             if(webElement.isDisplayed())
             {
@@ -89,7 +85,7 @@ public class MainActivity {
     private  static  void jumpToTop()
     {
         webElement = driver.findElement(By.xpath("//*[@id=\"gatsby-focus-wrapper\"]/div/a[1]"));
-        markelemets(webElement);
+        markElements(webElement);
         webElement.click();
         threadSleep();
     }
@@ -97,19 +93,18 @@ public class MainActivity {
     {
         try {
             webElement = driver.findElement(By.xpath("//*[text()[contains(.,'רוצים לשמוע עוד?')]]"));
-            int y= webElement.getLocation().getY();
             driver.findElement(By.xpath("//*[text()[contains(.,'דברו איתנו')]]")).click();
             threadSleep();
             if( driver.findElement(By.xpath("//*[text()[contains(.,'שדה שם הוא שדה חובה')]]")).isDisplayed())
             {
                 findElementAndInsert("name","Andrey");
-                markelemets(webElement);
+                markElements(webElement);
                 findElementAndInsert("company","HEROLO");
-                markelemets(webElement);
+                markElements(webElement);
                 findElementAndInsert("email","abcd@walla.com");
-                markelemets(webElement);
+                markElements(webElement);
                 findElementAndInsert("telephone","0508117980");
-                markelemets(webElement);
+                markElements(webElement);
 
             }
 
@@ -124,15 +119,15 @@ public class MainActivity {
         webElement.click();
         webElement.sendKeys(val);
     }
-    private static void shareedIcons(String url)
+    private static void shareedIcons()
     {
-        ArrayList<String> tabs2 = new ArrayList<String> (driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles());
         for(int i=1; i<=4; i++) {
-            findIconBySrc("//*[@id=\"section-contact\"]/section/div[2]/div/div[2]/div/a["+i+"]",url);
+            findIconBySrc("//*[@id=\"section-contact\"]/section/div[2]/div/div[2]/div/a["+i+"]");
         }
         driver.switchTo().window(tabs2.get(0));
     }
-    private static void findIconBySrc(String xpath,String url)
+    private static void findIconBySrc(String xpath)
     {
         webElement = driver.findElement(By.xpath(xpath));
         webElement.click();
@@ -145,7 +140,7 @@ public class MainActivity {
             e.printStackTrace();
         }
     }
-    private  static boolean openWhatapp(String url) {
+    private  static void openWhatapp() {
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
@@ -153,14 +148,27 @@ public class MainActivity {
         }
         webElement = driver.findElement(By.xpath("//*[@id=\"modal-form\"]/div/div[1]/input"));
         webElement.sendKeys("aaa");
+        threadSleep();
+        driver.findElement(By.xpath("//*[@id=\"modal-form\"]/button")).click();
+        markElements(webElement);
+        threadSleep();
+        for(int i=2; i<=3; i++)
+        {
+                webElement = driver.findElement(By.xpath("//*[@id=\"modal-form\"]/div/div[" + i + "]/input"));
+                webElement.click();
+                if(i!=3) {
+                    webElement.sendKeys("aaa@walla.com");
+                }
+                else{
+                    webElement.sendKeys("0508117980");
+                }
+            markElements(webElement);
+            threadSleep();
+        }
+        driver.findElement(By.xpath("//*[@id=\"modal-form\"]/button")).click();
+        }
 
-        return false;
-    }
-    private  static void finish()
-    {
-        driver.findElement(By.xpath("//*[text()[contains(.,'דברו איתנו')]]")).click();
-    }
-    private  static void markelemets(WebElement ele)
+    private  static void markElements(WebElement ele)
     {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("arguments[0].setAttribute('style', 'background: yellow; border: 2px solid red;');", ele);
